@@ -6,6 +6,7 @@ a koa project template
 - environment
 - nodemon
 - gzip
+- vscode debug
 - nunjucks
 - route default register
 - static files
