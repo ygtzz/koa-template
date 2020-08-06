@@ -16,6 +16,8 @@
     <button type="button" onclick="axios_download()">axios下载</button>
     <button type="button" onclick="superagent_download()">superagent下载</button>
     <button type="button" onclick="fetch_download()">fetch下载</button>
+    <button type="button" onclick="form_download()">form下载</button>
+
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0-0/axios.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/superagent/4.1.0/superagent.js"></script>
     <script>
@@ -64,7 +66,7 @@
             // 发送ajax请求
             xhr.send()
         }
-        
+
         //axios下载
         function axios_download(){
             let url = '/file/build';
@@ -100,10 +102,10 @@
             let type = fileName;
 
             return superagent.get(url)
-                             .set('content-disposition', `attachment;filename=${type}`)
-                             .set('content-type', 'application/x-download;charset=utf-8')
-                             .type('blob')
-                             .then(res => {
+                                .set('content-disposition', `attachment;filename=${type}`)
+                                .set('content-type', 'application/x-download;charset=utf-8')
+                                .type('blob')
+                                .then(res => {
                                 const blob = new Blob([res.data], {type: type})
                                 const url = window.URL.createObjectURL(blob)
                                 const link = document.createElement('a')
@@ -115,7 +117,7 @@
                                 link.click()
                                 document.body.removeChild(link)
                             })
-                             
+                                
         }
 
         //fetch下载文件
@@ -132,7 +134,40 @@
                 window.URL.revokeObjectURL(url); 
                 //提示'下载完成'; 
             })); 
-        }; 
+        }
+
+        function form_download(values){
+            let url = '/file/build';
+            try{
+                let form = document.createElement('form');
+                //用target指向iframe会打开新页面，原因是？？？？？
+                //form.target = 'ifr-down';
+                form.action = url;
+                form.method = 'get';
+
+                if(values && typeof values == 'object'){
+                    Object.keys(values).forEach(item => {
+                        form.insertAdjacentHTML('beforeend', `<input type="hidden" name="${item}" value="${values[item]}"/>`);
+                    })
+                }
+
+                let iframe = document.createElement('iframe');
+                iframe.id = 'ifr-down';
+                iframe.style = 'display:none';
+                iframe.src = "about:blank";
+                iframe.onload = function(){
+                    iframe.onload = null;
+                    //document.body.removeChild(form);
+                    //document.body.removeChild(iframe);
+                }
+                //document.body.appendChild(iframe);
+                document.body.appendChild(form);
+                form.submit();
+            }
+            catch(e){
+                console.log(e);
+            }
+        }
     </script>
 </body>
 </html>
