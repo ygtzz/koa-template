@@ -7,11 +7,132 @@
     <title>下载</title>
 </head>
 <body>
-    <button onClick="fDownload">下载</button>
+    <button onClick="location_download()">location下载</button>
+    <a class="btn btn-primary btn-xs" download="dataDown.zip" href="/file/build" rel="external nofollow" >
+        <i class="fa fa-share-square-o fa-lg"></i>超链接直接下载
+    </a>
+    <button type="button" onclick="simulateA_download()">模拟超链接下载</button>
+    <button type="button" onclick="ajax_download()">ajax原生下载</button>
+    <button type="button" onclick="axios_download()">axios下载</button>
+    <button type="button" onclick="superagent_download()">superagent下载</button>
+    <button type="button" onclick="fetch_download()">fetch下载</button>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0-0/axios.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/superagent/4.1.0/superagent.js"></script>
     <script>
-        function fDownload(){
+        //location的href跳转，在当前页下载
+        function location_download(){
             location.href = '/file/build';
         }
+        //模拟a标签click，在当前页下载
+        function simulateA_download() {
+            var a = document.createElement('a');
+            a.href = '/file/build';
+            //文件名无效
+            a.download = 'data.zip';
+            document.body.appendChild(a);
+            a.click()
+            document.body.removeChild(a);
+        }
+        //ajax在当前页下载
+        function ajax_download(){
+            var url = '/file/build';
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);    // 也可以使用POST方式，根据接口
+            xhr.responseType = "blob";  // 返回类型blob
+            // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+            xhr.onload = function () {
+                // 请求完成
+                if (this.status === 200) {
+                    // 返回200
+                    var blob = this.response;
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a表情href
+                    reader.onload = function (e) {
+                        // 转换完成，创建一个a标签用于下载
+                        var a = document.createElement('a');
+                        //文件名有效
+                        a.download = 'data.zip';
+                        //会造成跳转到空白页，解决方案？？？
+                        a.href = e.target.result;
+                        a.target = '_self';
+                        document.querySelector("body").appendChild(a);  // 修复firefox中无法触发click
+                        a.click();
+                        a.parentNode.remove();
+                    }
+                }
+            };
+            // 发送ajax请求
+            xhr.send()
+        }
+        
+        //axios下载
+        function axios_download(){
+            let url = '/file/build';
+            let fileName = 'data_axios.zip';
+            let type = fileName;
+
+            return axios({
+                method: 'get',
+                url: url,
+                responseType: 'blob',
+                headers: {
+                    'content-disposition': `attachment;filename=${type}`,
+                    'content-type': 'application/x-download;charset=utf-8'
+                }
+            })
+            .then(res => {
+                const blob = new Blob([res.data], {type: type})
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.style.display = 'none'
+                link.href = url
+                //文件名有效
+                link.setAttribute('download', fileName)
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+            })
+        }
+        //superagnet下载
+        function superagent_download(){
+            let url = '/file/build';
+            let fileName = 'data_super.zip';
+            let type = fileName;
+
+            return superagent.get(url)
+                             .set('content-disposition', `attachment;filename=${type}`)
+                             .set('content-type', 'application/x-download;charset=utf-8')
+                             .type('blob')
+                             .then(res => {
+                                const blob = new Blob([res.data], {type: type})
+                                const url = window.URL.createObjectURL(blob)
+                                const link = document.createElement('a')
+                                link.style.display = 'none'
+                                link.href = url
+                                //文件名有效
+                                link.setAttribute('download', fileName)
+                                document.body.appendChild(link)
+                                link.click()
+                                document.body.removeChild(link)
+                            })
+                             
+        }
+
+        //fetch下载文件
+        function fetch_download() { 
+            //可以先提示'文件下载中...'，这样在下载框弹出之前，用户体验会好很多
+            var url = "/file/build"; 
+            fetch(url).then(res => res.blob().then(blob => { 
+                var a = document.createElement('a'); 
+                var url = window.URL.createObjectURL(blob);   // 获取 blob 本地文件连接 (blob 为纯二进制对象，不能够直接保存到磁盘上)
+                var filename = res.headers.get('Content-Disposition');
+                a.href = url; 
+                a.download = filename.split('filename=')[1];
+                a.click(); 
+                window.URL.revokeObjectURL(url); 
+                //提示'下载完成'; 
+            })); 
+        }; 
     </script>
 </body>
 </html>
