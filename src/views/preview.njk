@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      padding: 10px;
+    }
+    #video {
+      display: none;
+      width: 300px;
+      height: 150px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <form action="/file/upload" method="post" target="_blank"
+    enctype="multipart/form-data">
+    <input type="submit" value="上传">
+    <input type="file" name="file" id="file" onchange="getVideo()">
+  </form>
+  <div>
+    <video id="video" src="" autoplay controls></video>
+  </div>
+
+  <button onclick="requestApi()">上传111</button>
+  <input type="file" name="" id="file" onchange="getVideo()">
+  <video id="video" src="" autoplay controls></video>
+
+</body>
+
+<script>
+
+  let input = document.getElementById('file')
+  let video = document.getElementById('video')
+  let file = null
+  function getVideo() {
+    file = input.files[0]
+    let getUrl = function (file) {
+      let url = ''
+      if (window.createObjectURL != undefined) {
+        url = window.createObjectURL(file)
+      } else if (window.webkitURL != undefined) {
+        url = window.webkitURL.createObjectURL(file)
+      } else if (window.URL != undefined) {
+        url = window.URL.createObjectURL(file)
+      }
+      return url
+    }
+    let videoUrl = getUrl(file)
+    if (videoUrl) {
+      video.src = videoUrl
+      video.style.display = 'block'
+    }
+  }
+
+  function requestApi() {
+
+    let formData = new FormData()
+    formData.append("file", file)
+
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.open('POST', '/file/upload', true);
+    // ajax上传文件，不能直接设置content-type，会自动生成
+    // httpRequest.setRequestHeader("Content-type", "multipart/form-data");
+    httpRequest.send(formData);
+
+    httpRequest.onreadystatechange = function () {
+      if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+        var json = httpRequest.responseText;
+        console.log(json);
+      }
+    };
+  }
+
+</script>
+
+</html>

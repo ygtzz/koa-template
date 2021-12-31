@@ -37,6 +37,25 @@ module.exports = {
         ctx.attachment(zipName);
 
         await send(ctx, zipName);
+    },
+    async preview(ctx){
+        await ctx.render('preview');
+    },
+    async upload(ctx){
+        let file = ctx.request.files.file; // 获取上传文件
+        //创建可读流
+        const reader = fs.createReadStream(file['path']);
+        let filePath = `upload` + `/${file['name']}`;
+        let remotefilePath = `http://localhost:3100` + `/${file['name']}`;
+        // 创建可写流
+        const upStream = fs.createWriteStream(filePath);
+        // 可读流通过管道写入可写流
+        reader.pipe(upStream);
+        return ctx.body = {
+            url: remotefilePath,
+            message: "文件上传成功",
+            cc: 0
+        }   
     }
 }
 

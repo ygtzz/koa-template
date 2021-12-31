@@ -9,6 +9,9 @@ const routeMap = {
     },
     '/user/login':{
         method: 'post'
+    },
+    '/file/upload':{
+        method: 'post'
     }
 }
 
@@ -21,7 +24,7 @@ Object.keys(routeMap).forEach(function(item){
     }
 });
 
-//controller方法默认注册为get方法，routeMap声明的注册为对应方法
+//controller方法默认注册为get请求，routeMap声明的注册为对应类型请求
 const files = fWalk(path.join(__dirname,'./controller'));
 files.forEach(function(item){
     item = path.basename(item);
@@ -43,17 +46,6 @@ files.forEach(function(item){
 });
 
 
-// const user = require('./controller/user');
-// const file = require('./controller/file');
-
-// router.post('/user/login',user.login);
-// router.get('/user/profile',user.profile);
-// router.get('/user/template',user.template);
-// router.get('/file/download',file.download);
-// router.get('/file/build',file.build);
-
-module.exports = router;
-
 function fWalk(dir) {
     var results = []
     var list = fs.readdirSync(dir)
@@ -65,3 +57,5 @@ function fWalk(dir) {
     })
     return results
 }
+
+module.exports = router;

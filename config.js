@@ -12,10 +12,12 @@ module.exports = {
     },
     development:{
         port: 3100,
-        staticDirectory: path.join(__dirname,'./src/static')
+        staticDirectory: path.join(__dirname,'./src/static'),
+        uploadDirectory: path.join(__dirname,'./upload')
     },
     production:{
         port: 80,
-        staticDirectory: path.join(__dirname,'./src/static')
+        staticDirectory: path.join(__dirname,'./src/static'),
+        uploadDirectory: path.join(__dirname,'./upload')
     }
 }
