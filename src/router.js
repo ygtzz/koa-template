@@ -15,7 +15,7 @@ const routeMap = {
     }
 }
 
-//注册默认redirect
+// 注册默认redirect
 Object.keys(routeMap).forEach(function(item){
     const routeItem = routeMap[item];
     if(routeItem.redirect){
@@ -24,7 +24,8 @@ Object.keys(routeMap).forEach(function(item){
     }
 });
 
-//controller方法默认注册为get请求，routeMap声明的注册为对应类型请求
+// controller方法默认注册为get请求
+// routeMap声明的注册为post等其他类型请求
 const files = fWalk(path.join(__dirname,'./controller'));
 files.forEach(function(item){
     item = path.basename(item);
