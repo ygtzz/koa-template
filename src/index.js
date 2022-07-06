@@ -34,4 +34,4 @@ app.use(router.routes())
 
 app.listen(envCfg.port);
 
-console.log('app start at port ' + envCfg.port + '...');
+console.log('app start at http://localhost:' + envCfg.port + '...');

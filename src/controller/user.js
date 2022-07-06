@@ -12,8 +12,8 @@ module.exports = {
             username: ctx.request.body.username
         }
     },
-    async template(ctx){
-        await ctx.render('user_template',{
+    async index(ctx){
+        await ctx.render('user',{
             title: 'user template',
             name: '游客'
         });
