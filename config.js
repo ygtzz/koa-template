@@ -11,7 +11,7 @@ module.exports = {
         }
     },
     development:{
-        port: 3100,
+        port: 3800,
         staticDirectory: path.join(__dirname,'./src/static'),
         uploadDirectory: path.join(__dirname,'./upload')
     },
