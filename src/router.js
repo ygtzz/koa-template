@@ -15,7 +15,7 @@ const routeMap = {
     }
 }
 
-// 注册默认redirect
+// 注册项中有配置redirect，先注册跳转路由
 Object.keys(routeMap).forEach(function(item){
     const routeItem = routeMap[item];
     if(routeItem.redirect){
@@ -32,16 +32,23 @@ files.forEach(function(item){
     const ext = path.extname(item);
     const fileName = item.replace(new RegExp(ext+'$'),'');
     const controller = require('./controller/' + item);
+    //默认使用controller的文件名，作为路由的中段
     Object.keys(controller).forEach(function(method){
         const key = '/' + fileName + '/' + method;
         const routeItem = routeMap[key];
+        //配置项中有对应的项，则添加配置项中对应的方法
         if(routeItem){
             if(routeItem.method){
                 router[routeItem.method](key, controller[method]);
             }
         }
+        //配置项中没有，则默认注册为get方法，此处有缺陷，不能在方法上指明是那种类型的方法，需要装饰器写法支持
         else{
             router.get(key, controller[method]);
+            //index的action同时注册为短路由，例如: /user/index, /user 为同一个地址
+            if(method == 'index'){
+                router.get(`/${fileName}`, controller[method]);
+            }
         }
     });
 });
