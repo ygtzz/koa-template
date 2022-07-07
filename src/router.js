@@ -15,6 +15,8 @@ const routeMap = {
     }
 }
 
+const postKeys = ['create','update','del','delOne'];
+
 // 注册项中有配置redirect，先注册跳转路由
 Object.keys(routeMap).forEach(function(item){
     const routeItem = routeMap[item];
@@ -41,6 +43,9 @@ files.forEach(function(item){
             if(routeItem.method){
                 router[routeItem.method](key, controller[method]);
             }
+        }
+        else if(postKeys.includes(method)){
+            router.post(key, controller[method]);
         }
         //配置项中没有，则默认注册为get方法，此处有缺陷，不能在方法上指明是那种类型的方法，需要装饰器写法支持
         else{

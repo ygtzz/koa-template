@@ -3,7 +3,7 @@ const Koa = require('koa');
 const router = require('./router');
 const koaNunjucks = require('koa-nunjucks-2');
 const app = new Koa();
-
+const db = require('./common/db');
 const static = require('koa-static');
 const gzip = require('koa-gzip');
 const koaBody = require('koa-body');
@@ -21,6 +21,7 @@ app.use(static(envCfg.uploadDirectory));
 //模板
 app.use(koaNunjucks(config.template));
 
+//koa2 使用 koa-body 代替 koa-bodyparser 和 koa-multer
 app.use(koaBody({
    multipart: true,
    formidable: {
@@ -33,5 +34,10 @@ app.use(router.routes())
 
 
 app.listen(envCfg.port);
+
+//数据库初始化
+db.start((dbInstance) => {
+   global.db = dbInstance;
+});
 
 console.log('app start at http://localhost:' + envCfg.port + '...');
