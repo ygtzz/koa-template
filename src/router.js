@@ -34,6 +34,7 @@ files.forEach(function(item){
     const ext = path.extname(item);
     const fileName = item.replace(new RegExp(ext+'$'),'');
     const controller = require('./controller/' + item);
+
     //默认使用controller的文件名，作为路由的中段
     Object.keys(controller).forEach(function(method){
         const key = '/' + fileName + '/' + method;
