@@ -13,7 +13,7 @@
   "dependencies": {
     "waterline": "^0.15.0",
     "sails-disk": "^2.1.1",
-    "sails-mysql": "^2.0.0",
+    "sails-mysql": "^3.0.0",
     "archiver": "^3.0.0",
     "koa": "^2.5.3",
     "koa-body": "^4.2.0",
